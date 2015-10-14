@@ -1,0 +1,6 @@
+#include <future.h>
+syscall future_free(future* f)
+{	
+	//printf("IN FUTURE_FREE \n");
+	return freemem((char*)f,sizeof(future));
+}

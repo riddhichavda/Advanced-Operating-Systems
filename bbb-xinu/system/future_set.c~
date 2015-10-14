@@ -1,0 +1,19 @@
+#include <future.h>
+syscall future_set(future *f, int *value)
+{
+	printf("Now in future_set !! \n");
+	if(f->state == FUTURE_VALID || f->state == FUTURE_EMPTY)		
+	{
+		//printf("Now in valid or empty state !!");
+		return SYSERR;
+	}
+	else
+	{
+		f->value = value;
+		f->state = FUTURE_VALID;
+		//printf("NOW IN VALID STATE!!");
+		ready(f->pid);
+		return OK;
+	}
+}
+

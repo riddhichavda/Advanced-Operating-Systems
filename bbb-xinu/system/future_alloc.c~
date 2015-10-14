@@ -1,0 +1,11 @@
+#include <future.h>
+
+future* future_alloc(int future_flag)
+{
+	future *f;
+	f->flag = future_flag;
+	f->state = FUTURE_EMPTY;
+	f = (future*)getmem(sizeof(future));
+	
+	return f;	
+}
