@@ -16,7 +16,7 @@ syscall future_set(future *f, int *value)
 		
 		f->value = value;
 		f->state = FUTURE_VALID;
-		resched();
+		//resched();
 
 		
 		ready(f->pid);
