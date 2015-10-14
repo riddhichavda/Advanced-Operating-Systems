@@ -12,7 +12,7 @@
 
 typedef struct futent
 {
-   int *value;		
+   int value;		
    int flag;		
    int state;         	
    pid32 pid;
@@ -21,7 +21,7 @@ typedef struct futent
 /* Interface for system call */
 future* future_alloc(int future_flags);
 syscall future_free(future*);
-syscall future_get(future*, int*);
-syscall future_set(future*, int*);
+syscall future_get(future*, int *);
+syscall future_set(future*, int *);
  
 #endif /* _FUTURE_H_ */

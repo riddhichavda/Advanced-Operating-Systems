@@ -14,12 +14,12 @@ syscall future_set(future *f, int *value)
 		//prptr->prstate = PR_READY;
 		//insert(currpid, readylist, prptr->prprio);
 		
-		f->value = value;
+		f->value = *value;
 		f->state = FUTURE_VALID;
 		//resched();
 
 		
-		ready(f->pid);
+		//ready(f->pid);
 		return OK;
 	}
 }
