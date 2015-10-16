@@ -1,25 +1,12 @@
 #include <prodcons.h>
 uint future_cons(future *fut) {
-  
+
   int i, status;
-  
-  while(1)
-{
   status = future_get(fut, &i);
-
-
-  if (status < 1)
-  {
-   continue;
+  if (status < 1) {
+    printf("future_get failed\n");
+    return -1;
   }
- 
-  else if (status == 1) {
-   printf("Consumed Value : %d \n",i);    //restore(im);
-    break;
-
-  }
-
- } 
-  future_free(fut);
+  printf("it produced %d\n", i);
   return OK;
 }

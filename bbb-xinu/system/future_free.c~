@@ -1,6 +1,6 @@
 #include <future.h>
 syscall future_free(future* f)
 {	
-	//printf("IN FUTURE_FREE \n");
+	intmask	mask;	
 	return freemem((char*)f,sizeof(future));
 }

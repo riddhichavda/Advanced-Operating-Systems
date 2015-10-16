@@ -1,30 +1,31 @@
 #include <future.h>
 syscall future_get(future *f, int *value)
 {
-	
-	//struct	procent *prptr;
-	//prptr = &proctab[currpid];
-	
+	intmask	mask;	
+	struct	procent *prptr;
+	prptr = &proctab[currpid];
+	mask = disable();	
 	if(f->state == FUTURE_EMPTY)		
 	{		
 		f->pid = currpid;
 		f->state = FUTURE_WAITING;
-		
-		//prptr->prstate = PR_WAIT;
-		//resched();
-		//*value = *f->value;
-		return SYSERR;
+		while(f->state != FUTURE_VALID)
+			resched();
+		*value = f->value;
+		restore(mask);		
+		return OK;
 	}
-	else if(f->state == FUTURE_WAITING && f->pid != NULL)
-	{
+	else if(f->state == FUTURE_WAITING )
+	{		
+		restore(mask);				
 		return SYSERR;
 	}
 	else
-	{
+	{	
 		*value = f->value;
 		f->pid = NULL;
 		f->state = FUTURE_EMPTY;
-		
+		restore(mask);		
 		return OK;
 	}
 }

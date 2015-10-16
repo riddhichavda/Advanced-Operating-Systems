@@ -1,25 +1,18 @@
 #include <future.h>
 syscall future_set(future *f, int *value)
 {
-	//register struct procent *prptr;
-	//prptr = &proctab[currpid];
-	
+	intmask	mask;
+	mask = disable();
 	if(f->state == FUTURE_VALID || f->state == FUTURE_EMPTY)		
-	{
+	{		
+		restore(mask);		
 		return SYSERR;
 	}
 	else
-	{
-		
-		//prptr->prstate = PR_READY;
-		//insert(currpid, readylist, prptr->prprio);
-		
+	{	
 		f->value = *value;
 		f->state = FUTURE_VALID;
-		//resched();
-
-		
-		//ready(f->pid);
+		restore(mask);
 		return OK;
 	}
 }
