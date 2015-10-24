@@ -6,35 +6,32 @@
 
 
 
-future* future_alloc(int future_flags){
-	
-	future *f;
-	queue *setq;
-	queue *getq;
+future* future_alloc(int future_flags)
+{	
 	int *val;
+	future *f;
 	intmask	mask;
-	mask=disable();	
-	
+	mask=disable();
 	f=(future *)getmem(sizeof(future));
-
 	f->value = (int *)getmem(sizeof(int));
-		
 	f->state = FUTURE_EMPTY;
 	f->flag = future_flags;
 
 	if(future_flags != FUTURE_EXCLUSIVE){
+              	queue *setqueue;
+	        queue *getqueue;
 		if(future_flags != FUTURE_SHARED){
-			setq = (queue *)getmem(sizeof(queue));
-			setq->front = 0;
-			setq->rear = -1;
-			setq->count=0;
-			f->set_queue = setq;
+			setqueue = (queue *)getmem(sizeof(queue));
+			setqueue->front = 0;
+			setqueue->rear = -1;
+			setqueue->count=0;
+			f->set_queue = setqueue;
 		}
-		getq = (queue *)getmem(sizeof(queue));
-		getq->front = 0;
-		getq->rear = -1;		
-		getq->count=0;			
-		f->get_queue = getq;
+		getqueue = (queue *)getmem(sizeof(queue));
+		getqueue->front = 0;
+		getqueue->rear = -1;		
+		getqueue->count=0;			
+		f->get_queue = getqueue;
 	}
 	
 	if(f == SYSERR){

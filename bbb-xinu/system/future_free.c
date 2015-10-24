@@ -11,7 +11,6 @@ syscall future_free(future *f){
 		return OK;		
 		}		
 	}
-	//freemem((char*)f->value, sizeof(int));
 	freemem((char*)f, sizeof(f));
 	restore(mask);
   	return OK;

@@ -39,10 +39,8 @@ int isNumeric(const char *str){
 		if(strncmp(args[1], "--help", 7) == 0){
 			printf("Description:\n");
 			printf("\t--help\t display this help and exit\n");
-			printf("\t-f \t execute futures\n");
-			printf("\t\t by default it will execute producer-consumer.\n");
-			printf("Arguments in case of producer-consumer:\n");
-			printf("\tmax value of shared variable (integer){default value is 2000}\n");
+			printf("\t-f \t Futures Implementation\n");
+			printf("\t\t prodcons - producer consumer implementation\n");
 			return 0;
 		}
 
@@ -53,10 +51,12 @@ int isNumeric(const char *str){
 			f_queue = future_alloc(FUTURE_QUEUE);
 					 
 			// Test FUTURE_EXCLUSIVE
+			printf("FUTURE_EXCLUSIVE \n");
 			resume( create(future_cons, 1024, 20, "fcons1", 1, f_exclusive) );
 			resume( create(future_prod, 1024, 20, "fprod1", 1, f_exclusive) );
 			sleep(1);	
 			// Test FUTURE_SHARED
+			printf("FUTURE_SHARED \n");
 			resume( create(future_cons, 1024, 20, "fcons2", 1, f_shared) );
 			resume( create(future_cons, 1024, 20, "fcons3", 1, f_shared) );
 			resume( create(future_cons, 1024, 20, "fcons4", 1, f_shared) ); 
@@ -64,6 +64,7 @@ int isNumeric(const char *str){
 			resume( create(future_prod, 1024, 20, "fprod2", 1, f_shared) );
 			sleep(1);
 			// Test FUTURE_QUEUE
+			printf("FUTURE_QUEUE \n");
 			resume( create(future_cons, 1024, 20, "fcons6", 1, f_queue) );
 			resume( create(future_cons, 1024, 20, "fcons7", 1, f_queue) );
 			resume( create(future_cons, 1024, 20, "fcons7", 1, f_queue) );
@@ -80,14 +81,14 @@ int isNumeric(const char *str){
 
 			//check args[1](integer) if present assign value to count
 			if(!isNumeric(args[1])){
-				printf("Invalid argument.\nType prodcons --help for details.\n");
+				printf("count value invalid. Count needs to be betweem 1 and 2000.\n");
 				return 0; 
 			}
 			count = (atoi)(args[1]);
 
 			//if command line count is 0 terminate. 
 			if(count == 0){
-				printf("Nothing to produce.\n");
+				printf("count value invalid. Count needs to be betweem 1 and 2000.\n");
 				return 0;	
 			}			
 		}

@@ -1,5 +1,4 @@
 #include<prodcons.h>
-
 uint future_prod(future *fut) {
 
 	int i, j;

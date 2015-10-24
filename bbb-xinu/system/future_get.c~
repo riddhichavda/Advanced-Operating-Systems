@@ -3,26 +3,25 @@
 /* if future has value return */
 syscall future_get(future *f, int *value){
 	intmask	mask;
-	//printf("in get");
 	mask=disable();
-	pid32 enpr;	
-	if (f->state == FUTURE_VALID){
-   	 	*value = f->value;
-		restore(mask);
-    		return OK;
- 	}
-	if(f->state == FUTURE_EMPTY){
+	pid32 proc;	
+
+	if(f->state == FUTURE_EMPTY)
+	{
 		f->state=FUTURE_WAITING;
-		if(f->flag == FUTURE_EXCLUSIVE){
+		if(f->flag == FUTURE_EXCLUSIVE)
+		{
 			f->pid=currpid;
 			suspend(f->pid);
 			*value = *f->value;
 			restore(mask);
 			return OK;
-		}else if(f->flag == FUTURE_SHARED){	
+		}
+		else if(f->flag == FUTURE_SHARED)
+		{	
 			f->state=FUTURE_WAITING;			
-			enpr = fenqueue(currpid, f->get_queue);
-			if(enpr == (pid32) SYSERR){
+			proc = fenqueue(currpid, f->get_queue);
+			if(proc == (pid32) SYSERR){
 				restore(mask);
 				return SYSERR;
 			}				
@@ -31,14 +30,19 @@ syscall future_get(future *f, int *value){
 			restore(mask);
 			return OK;	
 		}
-		else if(f->flag == FUTURE_QUEUE){
-			if(!fisempty(f->set_queue)){
+		else if(f->flag == FUTURE_QUEUE)
+		{
+			if(!fisempty(f->set_queue))
+			{
 				*value = *f->value;
 				resume(fdequeue(f->set_queue));
-			}else{	
+			}
+			else
+			{	
 				f->state=FUTURE_WAITING;			
-				enpr = fenqueue(currpid, f->get_queue);
-				if(enpr == (pid32) SYSERR){
+				proc = fenqueue(currpid, f->get_queue);
+				if(proc == (pid32) SYSERR)
+				{
 					restore(mask);
 					return SYSERR;
 				}				
@@ -50,24 +54,17 @@ syscall future_get(future *f, int *value){
 		}
 	}
 
-	if(f->flag == FUTURE_SHARED && f->state==FUTURE_WAITING){
-		enpr = fenqueue(currpid, f->get_queue);
-		if(enpr == (pid32) SYSERR){
-			restore(mask);
-			return SYSERR;
-		}	
-		suspend(currpid);
-		*value = *f->value;
-		restore(mask);
-		return OK;	
-	}
-
-	if(f->flag == FUTURE_QUEUE && f->state==FUTURE_WAITING){
-		if(!fisempty(f->set_queue)){
+	if(f->flag == FUTURE_QUEUE && f->state==FUTURE_WAITING)
+	{
+		if(!fisempty(f->set_queue))
+		{
 			resume(fdequeue(f->set_queue));
-		}else{
-			enpr = fenqueue(currpid, f->get_queue);
-			if(enpr == (pid32) SYSERR){
+		}
+		else
+		{
+			proc = fenqueue(currpid, f->get_queue);
+			if(proc == (pid32) SYSERR)
+			{
 				restore(mask);
 				return SYSERR;
 			}	
@@ -79,7 +76,23 @@ syscall future_get(future *f, int *value){
 		return OK;	
 	}
 
+	if(f->flag == FUTURE_SHARED && f->state==FUTURE_WAITING){
+		proc = fenqueue(currpid, f->get_queue);
+		if(proc == (pid32) SYSERR){
+			restore(mask);
+			return SYSERR;
+		}	
+		suspend(currpid);
+		*value = *f->value;
+		restore(mask);
+		return OK;	
+	}
 
+	if (f->state == FUTURE_VALID){
+   	 	*value = f->value;
+		restore(mask);
+    		return OK;
+ 	}
  	restore(mask);
   	return SYSERR;
 }

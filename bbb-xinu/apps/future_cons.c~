@@ -1,11 +1,7 @@
 #include<prodcons.h>
-#include<f_queue.h>
-uint future_cons(future *fut) {
-
-	
+uint future_cons(future *fut) 
+{
 	int i, status;
-
-	//printf("in consumer");
 	status = future_get(fut, &i);
 
 	if (status < 1) {
@@ -13,16 +9,13 @@ uint future_cons(future *fut) {
 		return -1;
 	}
 	
-	printf("it produced %d (Consumer PID : %d)\n", i, currpid);
+	printf("it produced %d \n", i);
 	if(fut->flag == FUTURE_EXCLUSIVE){
-		//printf("exc cleaning\n");
 		future_free(fut);		
-		//printf("exc cleaned\n");
 	}
+        else
 	if(fisempty(fut->get_queue)){
-		//printf("cleaning\n");
 		future_free(fut);
-		//printf("cleaned\n");
 	}
 	
 	return OK;
