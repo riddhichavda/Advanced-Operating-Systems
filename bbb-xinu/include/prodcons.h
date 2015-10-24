@@ -1,19 +1,17 @@
-#include <future.h>
-#include <stddef.h>
+#include <future.h> 
 #include <stdio.h>
-#include <kernel.h>
 
-  /*Global variable for producer consumer*/
-  extern int n; /*this is just declaration*/
-  extern sid32 produced, consumed;
+/*Global variable for producer consumer*/
+extern int n; /*this is just declaration*/
 
-  /*function Prototype*/
-  void consumer();
-  void producer();
-  
-  /*function Prototype for future producer and consumer*/
-  uint future_prod(future *fut);
-  uint future_cons(future *fut);
+/* Declare the required semaphores */
+extern sid32 consumed, produced;   
 
+/*function Prototype*/
+void consumer(int count);
+void producer(int count);
 
+/*function Prototype*/
+uint future_cons(future *fut);
+uint future_prod(future *fut);
 
