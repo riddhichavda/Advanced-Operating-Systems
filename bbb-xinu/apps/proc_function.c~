@@ -1,0 +1,11 @@
+#include<proc_function.h>
+void proc_function() 
+{
+	int n=0;	
+	while(n < 30)
+	{	
+		n++;			
+	}
+	printf("Produced value : %d \n",n);	
+	own_kill(currpid);
+ }

@@ -81,3 +81,7 @@ extern shellcmd xsh_prodcons       (int32, char *[]);
 
 /* in file xsh_reset.c */
 extern shellcmd xsh_reset       (int32, char *[]);
+
+/* in file xsh_memmanage.c */
+extern shellcmd xsh_memmanage      (int32, char *[]);
+

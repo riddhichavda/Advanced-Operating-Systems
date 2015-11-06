@@ -20,11 +20,7 @@ syscall future_get(future *f, int *value){
 		else if(f->flag == FUTURE_SHARED)
 		{	
 			f->state=FUTURE_WAITING;			
-			proc = fenqueue(currpid, f->get_queue);
-			if(proc == (pid32) SYSERR){
-				restore(mask);
-				return SYSERR;
-			}				
+			proc = fenqueue(currpid, f->get_queue);				
 			suspend(currpid);
 			*value = *f->value;
 			restore(mask);
@@ -40,12 +36,7 @@ syscall future_get(future *f, int *value){
 			else
 			{	
 				f->state=FUTURE_WAITING;			
-				proc = fenqueue(currpid, f->get_queue);
-				if(proc == (pid32) SYSERR)
-				{
-					restore(mask);
-					return SYSERR;
-				}				
+				proc = fenqueue(currpid, f->get_queue);				
 				suspend(currpid);
 				*value = *f->value;
 			}
@@ -63,11 +54,6 @@ syscall future_get(future *f, int *value){
 		else
 		{
 			proc = fenqueue(currpid, f->get_queue);
-			if(proc == (pid32) SYSERR)
-			{
-				restore(mask);
-				return SYSERR;
-			}	
 			suspend(currpid);
 			*value = *f->value;
 		}
@@ -76,9 +62,11 @@ syscall future_get(future *f, int *value){
 		return OK;	
 	}
 
-	if(f->flag == FUTURE_SHARED && f->state==FUTURE_WAITING){
+	if(f->flag == FUTURE_SHARED && f->state==FUTURE_WAITING)
+	{
 		proc = fenqueue(currpid, f->get_queue);
-		if(proc == (pid32) SYSERR){
+		if(proc == (pid32) SYSERR)
+		{
 			restore(mask);
 			return SYSERR;
 		}	
@@ -88,7 +76,8 @@ syscall future_get(future *f, int *value){
 		return OK;	
 	}
 
-	if (f->state == FUTURE_VALID){
+	if (f->state == FUTURE_VALID)
+	{
    	 	*value = f->value;
 		restore(mask);
     		return OK;

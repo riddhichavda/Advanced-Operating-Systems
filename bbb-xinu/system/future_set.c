@@ -18,12 +18,7 @@ syscall future_set(future *f, int *i) {
 		}
 		else 
 		{
-			proc = fenqueue(currpid, f->set_queue);
-			if(proc == (pid32) SYSERR)
-			{
-				restore(mask);
-				return SYSERR;
-			}	
+			proc = fenqueue(currpid, f->set_queue);	
 			suspend(currpid);
 			f->value = i;	
 			restore(mask);
@@ -59,12 +54,7 @@ syscall future_set(future *f, int *i) {
 			}
 			else
 			{
-				proc = fenqueue(currpid, f->set_queue);
-				if(proc == (pid32) SYSERR)
-				{
-					restore(mask);
-					return SYSERR;
-				}	
+				proc = fenqueue(currpid, f->set_queue);	
 				suspend(currpid);
 				f->value = i;	
 			}
