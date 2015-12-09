@@ -31,7 +31,7 @@ syscall	own_kill(
 	for (i=0; i<3; i++) {
 		close(prptr->prdesc[i]);
 	}
-
+	n=0;
 	for(i = 0; i<stacklen; i++ )
 	{
 		if(*local_ptr != 'a')

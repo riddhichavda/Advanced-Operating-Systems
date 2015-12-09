@@ -16,7 +16,7 @@
 #define	ARP_RETRY	3		/* Num. retries for ARP request	*/
 
 #define	ARP_TIMEOUT	3000		/* Retry timer in milliseconds	*/
-#define	ARP_TIMESUP	300		/* Retry timer in seconds	*/
+#define	ARP_TIMESUP	30		/* Retry timer in milliseconds	*/
 
 /* State of an ARP cache entry */
 

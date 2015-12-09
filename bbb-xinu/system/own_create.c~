@@ -1,6 +1,6 @@
 /* create.c - create, newpid */
 
-#include <xinu.h>
+#include <proc_function.h>
 
 local	int newpid();
 

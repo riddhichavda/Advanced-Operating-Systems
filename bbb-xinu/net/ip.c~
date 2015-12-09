@@ -41,7 +41,9 @@ void	ip_in(
 	switch (pktptr->net_ipproto) {
 
 	    case IP_UDP:
-		/* Skipping UDP checksum for now */		
+		/* Skipping UDP checksum for now */
+		printf("Aya UDP%d\n", pktptr->net_ipsrc);
+		printf("Aya UDP%d\n", pktptr->net_ipdst);		
 		udp_ntoh(pktptr);
 		break;
 

@@ -1,5 +1,4 @@
 #include <f_queue.h>
-//#include <xinu.h>
 #include <stddef.h>
 #include <stdlib.h>
 

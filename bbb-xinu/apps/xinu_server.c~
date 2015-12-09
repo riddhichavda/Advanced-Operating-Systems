@@ -1,0 +1,46 @@
+#include <own_net.h>
+
+int string_length(char s[]) {
+   int c = 0;
+ 
+   while (s[c] != '\0')
+      c++;
+ 
+   return c;
+}
+ int netserver(void){
+  
+	char inbuf[1500];
+	int32 delay = 2000;	
+	uint32 mask;
+	uint32 rmtIp;
+	int retries = 3;
+	uint16	locport	= 1234;
+	uint16	remotePort = 0;
+	dot2ip("192.168.1.100",&mask);
+	dot2ip("192.168.1.101",&rmtIp);
+	int32 slot = udp_register(mask, remotePort, locport);
+	int retval;
+	int i;
+	char msg[] = "Message From XINU";
+	int msglen;
+	
+	msglen = string_length(msg);
+	while(1){
+		for (i=0; i<retries; i++) {
+			retval = udp_recv(slot, inbuf, sizeof(inbuf), delay);
+			if (retval == TIMEOUT) {
+				//fprintf(stderr, "%s: timeout...\n", args[0]);
+				continue;
+			} else if (retval == SYSERR) {
+				
+				//udp_release(slot);
+				return 1;
+			}else{
+				printf("Received message %s", inbuf);
+				udp_sendto(slot, mask, 5678, inbuf, string_length(inbuf));
+				break;
+			}
+		}	
+	}
+ }

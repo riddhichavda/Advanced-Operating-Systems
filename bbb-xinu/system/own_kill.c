@@ -1,11 +1,8 @@
-/* kill.c - kill */
+
 
 #include <proc_function.h>
 
-/*------------------------------------------------------------------------
- *  kill  -  Kill a process and remove it from the system
- *------------------------------------------------------------------------
- */
+
 syscall	own_kill(
 	  pid32		pid		/* ID of process to kill	*/
 	)

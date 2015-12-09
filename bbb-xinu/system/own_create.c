@@ -1,4 +1,4 @@
-/* create.c - create, newpid */
+
 
 #include <proc_function.h>
 

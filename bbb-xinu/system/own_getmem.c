@@ -1,11 +1,8 @@
-/* getmem.c - getmem */
+
 
 #include <proc_function.h>
 
-/*------------------------------------------------------------------------
- *  getmem  -  Allocate heap storage, returning lowest word address
- *------------------------------------------------------------------------
- */
+
 char  	*own_getmem(
 	  uint32	nbytes		/* Size of memory requested	*/
 	)

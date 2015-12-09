@@ -59,18 +59,3 @@ void	clkhandler()
 		resched();
 	}
 }
-int deleteArp(void)
-	{
-		int32 i;
-		for(i = 0; i<ARP_SIZ; i++)
-		{
-			if(arpcache[i].arstate != AR_FREE)
-			{
-				if((clktime - arpcache[i].time) >= ARP_TIMESUP)
-				{
-					arpcache[i].arstate = AR_FREE;
-				}
-			}
-		}
-	return 1;
-	}
