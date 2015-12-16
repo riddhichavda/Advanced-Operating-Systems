@@ -87,3 +87,6 @@ extern shellcmd xsh_memmanage      (int32, char *[]);
 
 /* in file xsh_own_net.c */
 extern shellcmd xsh_own_net      (int32, char *[]);
+
+/* in file xsh_fstest.c */
+extern shellcmd xsh_fstest      (int32, char *[]);
