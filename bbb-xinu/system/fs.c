@@ -9,7 +9,6 @@
 
 #define MAXSIZE 1536
 
-//static struct fsystem fsd;
 int dev0_numblocks;
 int dev0_blocksize;
 char *dev0_blocks;
@@ -56,10 +55,6 @@ fs_get_inode_by_num(int dev, int inode_number, struct inode *in) {
 
   inode_off = inn * sizeof(struct inode);
 
-  /*
-  printf("in_no: %d = %d/%d\n", inode_number, bl, inn);
-  printf("inn*sizeof(struct inode): %d\n", inode_off);
-  */
 
   bs_bread(dev0, bl, 0, &block_cache[0], fsd.blocksz);
   memcpy(in, &block_cache[inode_off], sizeof(struct inode));
@@ -85,9 +80,6 @@ fs_put_inode_by_num(int dev, int inode_number, struct inode *in) {
   inn = inode_number % INODES_PER_BLOCK;
   bl += FIRST_INODE_BLOCK;
 
-  /*
-  printf("in_no: %d = %d/%d\n", inode_number, bl, inn);
-  */
 
   bs_bread(dev0, bl, 0, block_cache, fsd.blocksz);
   memcpy(&block_cache[(inn*sizeof(struct inode))], in, sizeof(struct inode));
@@ -378,7 +370,7 @@ int fs_write(int fd, void *buf, int nbytes){
 	int blocksToWrite=0;
 	struct inode tempInode;
 	int bytesToWrite=0, minBytes=0;
-	/* Check for valid fd and mode in the open file table */
+
 	if(fd<0 || fd>NUM_FD){
 		printf("\n Invalid file descriptor.");
 		printf("\n Could not write.");
@@ -390,8 +382,7 @@ int fs_write(int fd, void *buf, int nbytes){
 		printf("\n Could not write to file.");
 		return -1;
 	}
-	
-	/* Check for valid nbytes */
+
 	
 	if(nbytes <=0 || strlen((char*)buf)==0){
 		printf("\n Invalid nbytes value entered or invalid data length.");
@@ -399,23 +390,23 @@ int fs_write(int fd, void *buf, int nbytes){
 		return -1;	
 	}
 	
-	/* Valid data. Scale down nbytes if greater than strlen(buf) */
+
 	if(strlen((char*)buf) < nbytes){
 		nbytes = strlen((char*)buf);
 	}
 	
-	/* Check if this operation is overwriting the file */
+
 	if(oft[fd].in.size > 0){
 		tempInode = oft[fd].in;
-		/* Overwriting, thus clean the file data blocks. */
+		
 		for(;oft[fd].in.size>0;){
-			/* for all data blocks, clear the mask bit */
+	
 			if(fs_clearmaskbit(tempInode.blocks[oft[fd].in.size-1]) != OK){
 				printf("\n Error in clearing block %d",oft[fd].in.size-1);
 				printf("\n Could not write to file.");
 				return -1;
 			}
-			/* decrement the size */
+		
 			oft[fd].in.size--;
 		}
 	}
@@ -426,24 +417,22 @@ int fs_write(int fd, void *buf, int nbytes){
 	}
 	
 	bytesToWrite = nbytes;
-	
-	/* Initialize j to first data block */
+
 	j = FIRST_INODE_BLOCK + NUM_INODE_BLOCKS; 
 	for(i=0; i<blocksToWrite && j<MDEV_BLOCK_SIZE; j++){
 		if(fs_getmaskbit(j) == 0){
-			/* clear the data block to write */
+
 			memset(block_cache, NULL, MDEV_BLOCK_SIZE);
 			if(writeBlock(0, j, 0, block_cache, MDEV_BLOCK_SIZE) == SYSERR){
 				printf("\n Unable to free block %d.",j);
 				printf("\n Could not write to file.");
 				return -1;
 			}
-			/* get the minimum bytes to write */
+
 			minBytes = min(MDEV_BLOCK_SIZE, bytesToWrite);
-			/* copy the data into block_cache */
+
 			memcpy(block_cache, buf, minBytes);
-			
-			/* write the data into the data block */
+
 			if(writeBlock(0, j, 0, block_cache, MDEV_BLOCK_SIZE) == SYSERR){
 				printf("\n Unable to write to block %d.",j);
 				printf("\n Could not write to file.");
@@ -454,11 +443,10 @@ int fs_write(int fd, void *buf, int nbytes){
 			bytesToWrite = bytesToWrite - minBytes;
 			fs_setmaskbit(j);
 			
-			/* keep track of this data block into blocks[] */
 			oft[fd].in.blocks[i++] = j;
 		}
 	}
-	/* Update the size of the data blocks */
+
 	oft[fd].in.size = blocksToWrite;
 	printf("\n Size updated to %d blocks.",oft[fd].in.size);
 	if((status = fs_put_inode_by_num(0, oft[fd].in.id, &oft[fd].in))==SYSERR){
@@ -471,7 +459,7 @@ int fs_write(int fd, void *buf, int nbytes){
 }
 
 int readBlock(int dev, int block, int offset, void *buf, int len){
-	/* API to bs_bwrite(int dev, int block, int offset, void *buf, int len) */
+
 	
 	return bs_bread(dev, block, offset, buf, len);
 }
@@ -503,7 +491,7 @@ int fs_read(int fd, void *buf, int nbytes){
 		return -1;	
 	}
 	
-	/* Check if file is empty */
+
 	if(oft[fd].in.size == 0){
 		printf("\n Desired file empty.");
 		return 0;
@@ -513,59 +501,54 @@ int fs_read(int fd, void *buf, int nbytes){
 	if(nbytes % MDEV_BLOCK_SIZE !=0){
 		blocksToRead++;
 	}
-	/* Truncate to the minimum size blocks */
+
 	blocksToRead = min(oft[fd].in.size, blocksToRead);
-	/* set the start block for reading the file */
+
 	i = (oft[fd].fileptr / MDEV_BLOCK_SIZE);
 
-	/* printing the fileptr */
-	//printf("\n i=%d, fileptr = %d, blockstoread=%d.\n",i,oft[fd].fileptr,blocksToRead);
+	
 	memset(buf, NULL, MAXSIZE);
 	for(j=(oft[fd].fileptr % MDEV_BLOCK_SIZE); i<blocksToRead; i++){
 		memset(block_cache, NULL, MDEV_BLOCK_SIZE+1);
-		//printf("\n Offset j=%d\n",j);	
+
 		if(readBlock(0, oft[fd].in.blocks[i], j, block_cache, MDEV_BLOCK_SIZE-j) == SYSERR){
 			printf("\n Error in reading the file.");
 			return -1;
 		}
 
-		//printf("\n Block cache length = %d",strlen(block_cache));
 		strcpy((buf+temp), block_cache);
 		temp = strlen(block_cache);
-		//strcpy((buf+temp),'\0');
-		//(char*)(buf+temp-1) = '\0';
+		
 		//temp--;
-		printf("\n temp = %d",temp);
+		
 		bytesRead += temp;
+
 		
-		//printf("%s",buf);
-		
-		j=0; // reset the offset for read to 0
+		j=0; 
 	}
 	oft[fd].fileptr = bytesRead;
-	//printf("%s",buf);
+
 	return bytesRead;
 }
 
-/* seek by offset. */
-/* check for combined value (offset+fileptr) <= filesize */
+
 
 int fs_seek(int fd, int position, int offset){
 	
-	/* Valid fd checking */
+	
 	if(fd<0 || fd>NUM_FD){
 		printf("\n Invalid file descriptor.");
 		printf("\n Could not seek.");
 		return -1;
 	}
-	/* Check if file is open. */
+
 	if(oft[fd].state != FS_OPEN){
 		printf("\n File not open.");
 		printf("\n Could not seek.");
 		return -1;
 	}
 
-	/* position = FS_BEGIN, FS_CURR, FS_EOF */
+
 	switch(position){
 		case FS_BEGIN:
 			oft[fd].fileptr = 0;
@@ -602,7 +585,7 @@ int fs_close(int fd){
 		printf("\n Invalid file descriptor.");
 		return -1;
 	}
-	/* Add clean up */
+
 	if(oft[fd].state == FS_OPEN){
 		oft[fd].state = FS_CLOSE;
 		oft[fd].fileptr = 0;
